@@ -5,11 +5,15 @@ import '../providers/game_page_provider.dart';
 
 class GamePage extends StatelessWidget {
   final String selectedDifficulty;
+  final int selectedQestionNo;
   double? _deviceHeight, _deviceWidth;
 
   GameProvider? pageProvider;
 
-  GamePage({required this.selectedDifficulty, super.key});
+  GamePage(
+      {required this.selectedDifficulty,
+      required this.selectedQestionNo,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,9 @@ class GamePage extends StatelessWidget {
     _deviceWidth = MediaQuery.of(context).size.width;
     return ChangeNotifierProvider(
       create: (context) => GameProvider(
-          context: context, selectedDifficulty: selectedDifficulty),
+          context: context,
+          selectedDifficulty: selectedDifficulty,
+          selectedQestionNo: selectedQestionNo),
       child: _buildUI(),
     );
   }
@@ -41,6 +47,15 @@ class GamePage extends StatelessWidget {
                     color: Colors.red,
                   ),
                 ],
+              ),
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.home, // Home icon
+                  color: Colors.white, // White color
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Use your navigation logic here
+                },
               ),
             ),
             backgroundColor: Color.fromARGB(0, 3, 12, 2),
@@ -86,7 +101,7 @@ class GamePage extends StatelessWidget {
   Widget _questionText() {
     return Text(
       pageProvider!.getQuestions(),
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white, fontSize: 18),
     );
   }
 

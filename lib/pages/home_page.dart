@@ -10,6 +10,7 @@ class HomePageState extends State<HomePage> {
   double? _deviceWidth, _deviceHeight;
   double currentSliderValue = 0;
   List<String> difficultyLevel = ["Easy", "Medium", "Hard"];
+  int? selectedQestionNo = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,25 @@ class HomePageState extends State<HomePage> {
         backgroundColor: Color.fromARGB(0, 3, 12, 2),
         body: SafeArea(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
               gameName(),
+              const Spacer(),
+              selectQuestionNo(),
+              const SizedBox(
+                height: 10,
+              ),
               sliderButton(),
+              const SizedBox(
+                height: 10,
+              ),
+              const Spacer(),
               startButton(context),
+              const SizedBox(
+                height: 30,
+              ),
             ])));
   }
 
@@ -58,6 +71,57 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  Widget selectQuestionNo() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Expanded(
+            flex: 5,
+            child: Text(
+              "Select no of questions:",
+              style: TextStyle(
+                  fontSize: 16, color: Colors.white), // Optional: Styling
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: DropdownButton<int>(
+              isExpanded: true,
+              value: selectedQestionNo,
+              items: <int>[5, 10, 15].map((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(
+                    value.toString(),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedQestionNo = value;
+                });
+                print("selectedQestionNo$selectedQestionNo");
+              },
+              dropdownColor: Colors.black,
+              icon: const Icon(
+                Icons.arrow_drop_down_circle_outlined, // Use a different icon
+                color: Colors.white, // Optional: Change icon color
+                size: 24, // Optional: Change icon size
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget startButton(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
         textStyle: const TextStyle(fontSize: 20, color: Colors.red),
@@ -73,13 +137,17 @@ class HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    GamePage(selectedDifficulty: selectedDifficulty)),
+                builder: (context) => GamePage(
+                    selectedDifficulty: selectedDifficulty,
+                    selectedQestionNo: selectedQestionNo!)),
           );
         },
         child: const Text(
-          "Start Game",
-          style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold),
+          "Start",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

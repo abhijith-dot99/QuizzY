@@ -10,24 +10,27 @@ class GameProvider extends ChangeNotifier {
   int questionCount = 0;
   int scoreCount = 0;
   String selectedDifficulty;
+  int selectedQestionNo;
 
   BuildContext context;
-  GameProvider({required this.context, required this.selectedDifficulty}) {
+  GameProvider(
+      {required this.context,
+      required this.selectedDifficulty,
+      required this.selectedQestionNo}) {
     dio.options.baseUrl = 'https://opentdb.com/api.php?';
     getDataApi();
   }
 
   Future<void> getDataApi() async {
-    print("selected diff$selectedDifficulty");
     try {
       var response = await dio.get('', queryParameters: {
-        'amount': 10,
+        'amount': selectedQestionNo,
         'type': 'boolean',
         'difficulty': selectedDifficulty.toLowerCase()
       });
       var data = jsonDecode(response.toString());
       question = data['results'];
-      print("|dd$question");
+
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -56,7 +59,7 @@ class GameProvider extends ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 500));
     Navigator.pop(context);
     print("questionCount$questionCount");
-    if (questionCount == 3) {
+    if (questionCount == selectedQestionNo) {
       endGameCondition();
     } else {
       notifyListeners();
@@ -92,14 +95,22 @@ class GameProvider extends ChangeNotifier {
                   style:
                       const TextStyle(color: Colors.greenAccent, fontSize: 20),
                 ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
               )
             ],
           );
         });
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
     questionCount = 0;
     scoreCount = 0;
-    Navigator.pop(context);
+    // Navigator.pop(context);
     notifyListeners();
   }
 }
