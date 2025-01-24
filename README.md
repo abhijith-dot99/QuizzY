@@ -1,4 +1,4 @@
-# trivia
+# QuizzY
 
 A new Flutter project.
 
